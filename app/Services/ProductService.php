@@ -25,10 +25,11 @@ class ProductService
     {
         $products = $this->productRepository->getByFilter($request->all());
 
-        $products = $products->map(fn(Product $product) => (new ProductSource(
-            $product,
-            $this->getProductDiscount($product->toArray())
-        ))->toArray())
+        $products = $products->map(fn(Product $product) =>
+            (new ProductSource(
+                $product,
+                $this->getProductDiscount($product->toArray())
+            ))->toArray())
             ->values()
             ?->toArray();
 
@@ -46,7 +47,7 @@ class ProductService
             ->getTypes()
             ->map(fn(string $type) => $this->discountRepository
                 ->get()
-                ->filter(fn(Discount $discount) => $type == $discount->type && $product[$type] === $discount->key)
+                ->filter(fn (Discount $discount) => $type == $discount->type && $product[$type] === $discount->key)
             )->flatten();
 
         return $discounts->sortByDesc('value')->first();

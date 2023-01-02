@@ -20,9 +20,9 @@ class ProductRepository implements ProductRepositoryInterface
         return $this->model
             ->all()
             ->when(isset($filter['category']),
-                fn(Collection $query) => $query->where('category', $filter['category']))
+                fn (Collection $query) => $query->where('category', $filter['category']))
             ->when(isset($filter['priceLessThan']),
-                fn(Collection $query) => $query->where('price', '<', $filter['priceLessThan']));
+                fn (Collection $query) => $query->where('price', '<', $filter['priceLessThan']));
     }
 
     /**
