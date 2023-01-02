@@ -1,0 +1,50 @@
+version: '3'
+services:
+    app:
+        restart: always
+        build:
+            context: ./dockerConfig/docker
+            dockerfile: app.dockerfile
+        volumes:
+            - '.:/var/www/html'
+        depends_on:
+            - mysql
+        environment:
+          DB_PORT: "3306"
+          DB_HOST: "mysql"
+
+    web:
+      restart: always
+      build:
+        context: ./
+        dockerfile: dockerConfig/docker/web.dockerfile
+      working_dir: /var/www/html
+      volumes:
+        - '.:/var/www/html'
+      ports:
+        - "8000:80"
+      depends_on:
+        - app
+      links:
+        - app
+
+    mysql:
+        restart: always
+        image: 'mysql/mysql-server'
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_ROOT_PASSWORD: 'secret'
+            MYSQL_USER: 'homestead'
+            MYSQL_PASSWORD: 'secret'
+            MYSQL_DATABASE: 'mytheresa'
+            MYSQL_ROOT_HOST: '%'
+        volumes:
+            - 'appmysql:/var/lib/mysql'
+        healthcheck:
+          test: ["CMD", "mysqladmin", "ping"]
+        ports:
+        - "3306:3306"
+
+volumes:
+    appmysql:
+        driver: local
