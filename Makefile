@@ -12,6 +12,9 @@ deploy:
 	@echo "\033[0;32mDeployed.\033[0m"
 	@echo "http://localhost:8000/products?category=boots&priceLessThan=1000000"
 
+test:
+	docker-compose exec app ./vendor/bin/phpunit --repeat 10
+
 logs:
 	tail -f storage/logs/laravel.log
 
